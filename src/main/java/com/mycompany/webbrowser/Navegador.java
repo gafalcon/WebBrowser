@@ -14,24 +14,13 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collections;
-import javax.swing.GroupLayout;
-import javax.swing.JButton;
-import javax.swing.JEditorPane;
-import javax.swing.JLabel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextField;
 
 /**
  *
  * @author adrian
  */
-public class Navegador extends javax.swing.JFrame {
+public class Navegador {
 
-    public JButton jButton1;
-    public JEditorPane jEditorPane1;
-    public JLabel jLabel1;
-    public JScrollPane jScrollPane1;
-    public JTextField jTextField1;
     public ArrayList<webPages> pages;
     public static int redirect = 0;
     
@@ -63,6 +52,9 @@ public class Navegador extends javax.swing.JFrame {
             } else {
                 do {
                     str = is.readLine();
+                    //System.out.println(str);
+                    if(str.matches(".*Set-Cookie:.*"))
+                        System.out.print("***COOKIE***");
                     System.out.println(str);
                 } while (!str.matches(".*<!DOCTYPE") && str != null && !str.matches(".*<.*"));
                 html = str;
@@ -191,6 +183,11 @@ public class Navegador extends javax.swing.JFrame {
             //jLabel1.setText("Cargando....");
             do {
                     str = is.readLine();
+                    //System.out.println(str);
+                    if(str.matches(".*Set-Cookie:.*")){
+                        System.out.print("***COOKIE***");
+                        cookie(str);
+                    }    
                     System.out.println(str);
                 } while (str != null && !str.matches(".*<!DOCTYPE") &&  !str.matches(".*<.*"));
                 html = str;
@@ -224,7 +221,13 @@ public class Navegador extends javax.swing.JFrame {
         return html;
     }
     
-    
+        public static void cookie(String str){
+        String cookie = str.substring(str.indexOf("Set-Cookie: ")+11);
+        String []params = cookie.split(";");
+        for(int i = 0; i< params.length; i++){
+            System.out.println("param"+i+": "+params[i]);
+        }
+    }
     
     
    
